@@ -4,7 +4,6 @@ window.renderStatistics = function (ctx, names, times) {
 
   var colHeight = 150; // высота колонки
   var colWidth = 40; // ширина колонки
-  var step = colHeight / max; //  расечт пропорции
   var space = 90; // расстояние между колонками
   var initialX = 120; // координата x
   var initialY = 80; // координата y
@@ -17,7 +16,15 @@ window.renderStatistics = function (ctx, names, times) {
         max = time;
       }
     }
-  }
+    return max;
+  };
+
+  var step = colHeight / maxVal(); //  расечт пропорции
+
+  var getRandomVal = function (minValue, maxValue) { // находим рандомное значение для расчета прозрачности
+    return Math.random() * (maxValue - minValue) + minValue;
+  };
+
 
   ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
   ctx.fillRect(110, 20, 420, 270); // тень облака
@@ -31,9 +38,9 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillText('Список результатов', 120, 60);
 
   for (var i = 0; i < times.length; i++) {
-    ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-    ctx.fillRect(initialX + colWidth + space * i, initialY + step * times[i], colWidth, colHeight - step); // генерируем колонку
+    ctx.fillStyle = (names[i] === 'Вы') ? 'red' : 'rgba(0, 0, 255, ' + getRandomVal(0.1, 1) + ')'; // окрашиваем колонки
+    ctx.fillRect(initialX + colWidth + space * i, initialY + (colHeight - times[i] * step), colWidth, times[i] * step); // генерируем колонки
     ctx.fillText(names[i], initialX + colWidth + space * i, initialY + 170); // генерируем имя
-    ctx.fillText(times[i].toFixed(0), initialX + colWidth + space * i, initialY - 5); // генерируем вермя
+    ctx.fillText(times[i].toFixed(0), initialX + colWidth + space * i, initialY - 5); // генерируем время
   }
 };
